@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">guardianTeen</string>
+    <string-array name="user_types">
+        <item>parent</item>
+        <item>child</item>
+    </string-array>
+</resources>
