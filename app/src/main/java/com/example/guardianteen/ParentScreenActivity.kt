@@ -10,6 +10,10 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+
 
 class ParentScreenActivity : AppCompatActivity() {
 
@@ -17,7 +21,7 @@ class ParentScreenActivity : AppCompatActivity() {
     private lateinit var addChildButton: Button
     private lateinit var setGeofenceButton: Button
     private lateinit var healthVitalCheckButton: Button
-
+    private lateinit var socket: Socket
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parent_screen)
@@ -33,11 +37,13 @@ class ParentScreenActivity : AppCompatActivity() {
         addChildButton.setOnClickListener { handleAddChild(parentId) }
         setGeofenceButton.setOnClickListener { handleSetGeofence() }
         healthVitalCheckButton.setOnClickListener { handleHealthVitalCheck() }
+
+
     }
 
     private fun handleAddChild(parentId: String) {
         val childId = childIdEditText.text.toString()
-        val url = "https://guardianteenbackend.onrender.com/add_child"
+        val url = "http://192.168.0.95:5001/add_child"
 
         val userData = JSONObject().apply {
             put("pid", parentId)

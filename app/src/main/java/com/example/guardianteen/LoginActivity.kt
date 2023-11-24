@@ -16,6 +16,39 @@ import com.example.guardianteen.ChildScreenActivity
 import com.example.guardianteen.ParentScreenActivity
 import com.example.guardianteen.SignupActivity
 import org.json.JSONObject
+import android.app.Application
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.RemoteMessage
+import android.os.Handler
+import android.os.Looper
+import android.app.PendingIntent
+import android.media.RingtoneManager
+import androidx.core.app.NotificationCompat
+import android.app.NotificationChannel
+import android.app.NotificationManager
+
+import android.content.Context
+
+
+import android.os.Build
+
+
+
+
+
+class MyApplication : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        // Initialize Firebase
+        FirebaseApp.initializeApp(this)
+    }
+}
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -35,9 +68,67 @@ class LoginActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.loginButton)
         signupButton = findViewById(R.id.signupButton)
 
+
         setupSpinner()
         loginButton.setOnClickListener { handleLogin() }
         signupButton.setOnClickListener { navigateToSignup() }
+    }
+
+    class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+        override fun onMessageReceived(remoteMessage: RemoteMessage) {
+            // Check if the message contains a notification payload.
+            Log.d("FCM", "From: ${remoteMessage.from}")
+
+            // Check if the message contains data
+            if (remoteMessage.data.isNotEmpty()) {
+                Log.d("FCM", "Message data payload: ${remoteMessage.data}")
+            }
+
+            // Check if the message contains a notification payload
+            remoteMessage.notification?.let {
+                Log.d("FCM", "Message Notification Body: ${it.body}")
+                Log.d("FCM", "Message Notification Title: ${it.title}")
+            }
+            remoteMessage.notification?.let {
+                sendNotification(it.title ?: "New Message", it.body ?: "You have a new message.")
+            }
+        }
+
+        private fun sendNotification(title: String, messageBody: String) {
+            val intent = Intent(this, ParentScreenActivity::class.java)
+
+            val pendingIntent = PendingIntent.getActivity(
+                this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val channelId = getString(R.string.default_notification_channel_id)
+            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+            val notificationBuilder = NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(messageBody)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent)
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            // Since android Oreo notification channel is needed.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(channelId, "Channel human readable title", NotificationManager.IMPORTANCE_DEFAULT)
+                notificationManager.createNotificationChannel(channel)
+            }
+
+            notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
+        }
+
+
+
+        override fun onNewToken(token: String) {
+            // TODO: Send the new FCM registration token to your backend.
+        }
     }
 
     private fun setupSpinner() {
@@ -66,7 +157,7 @@ class LoginActivity : AppCompatActivity() {
         val jsonObjectRequest = object : JsonObjectRequest(
             Request.Method.POST, url, userData,
             Response.Listener { response ->
-                navigateBasedOnUserType(response, userType)
+                navigateBasedOnUserType(response, userType, email)
             },
             Response.ErrorListener { error ->
                 if (error.networkResponse != null) {
@@ -92,15 +183,31 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-    private fun navigateBasedOnUserType(response: JSONObject, userType: String) {
+
+
+    private fun navigateBasedOnUserType(response: JSONObject, userType: String, email: String) {
         try {
 
             val id = response.getString("id") // Get id as a string
             val name = response.getString("name")
 
 
+            FirebaseMessaging.getInstance().token
+                .addOnSuccessListener { token ->
+                    // Get the device token
+                    if (token != null) {
+                        // Store the device token in your database or use it as needed
+                        Log.d("DeviceToken", "Device Token: $token")
+                        updateDeviceToken(email, token)
+                    } else {
+                        Log.e("DeviceToken", "Device token is null")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    // Handle any errors that may occur during token retrieval
+                    Log.e("DeviceToken", "Failed to get device token: $e")
+                }
             Log.d("LoginSuccess", "User type: $userType, ID: $id, Name: $name")
-
             val intent = when (userType) {
                 "parent" -> Intent(this, ParentScreenActivity::class.java).apply {
                     putExtra("parentId", id)
@@ -115,11 +222,43 @@ class LoginActivity : AppCompatActivity() {
                     return  // Or handle an unexpected userType
                 }
             }
+
+
             startActivity(intent)
         } catch (e: Exception) {
             Log.e("LoginError", "Error navigating based on user type: ${e.message}")
         }
     }
+
+    private fun updateDeviceToken(email: String, deviceToken: String) {
+        val queue = Volley.newRequestQueue(this)
+        val url = "https://guardianteenbackend.onrender.com/updateDeviceToken" // Replace with your API endpoint
+
+        val tokenData = JSONObject().apply {
+            put("email", email)
+            put("deviceToken", deviceToken)
+        }
+
+        val jsonObjectRequest = object : JsonObjectRequest(
+            Request.Method.POST, url, tokenData,
+            Response.Listener<JSONObject> { response ->
+                Log.d("TokenUpdateSuccess", "Device token updated successfully")
+            },
+            Response.ErrorListener { error ->
+                Log.e("TokenUpdateError", "Error updating device token: ${error.message}")
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Content-Type"] = "application/json"
+                return headers
+            }
+        }
+
+        queue.add(jsonObjectRequest)
+    }
+
+
 
 
     private fun navigateToSignup() {
