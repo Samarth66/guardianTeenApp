@@ -35,9 +35,11 @@
         <activity
             android:name=".ChildScreenActivity"
             android:exported="false" />
-        <activity
-            android:name=".ParentScreenActivity"
-            android:exported="false" />
+
+        <activity android:name=".ParentScreenActivity"
+            android:launchMode="singleTop"
+            android:exported="true" />
+
 
         <activity
             android:name=".LoginActivity"

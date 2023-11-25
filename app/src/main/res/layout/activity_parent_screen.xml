@@ -30,4 +30,24 @@
         android:layout_height="wrap_content"
         android:text="Health Vital Check" />
 
+    <Button
+        android:id="@+id/refreshAlertsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh Alerts" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/alertsTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Alerts will be displayed here"
+            android:background="#E0E0E0"
+            android:padding="16dp" />
+    </ScrollView>
 </LinearLayout>

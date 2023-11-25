@@ -96,11 +96,17 @@ class LoginActivity : AppCompatActivity() {
         }
 
         private fun sendNotification(title: String, messageBody: String) {
-            val intent = Intent(this, ParentScreenActivity::class.java)
+            val intent = Intent(applicationContext, ParentScreenActivity::class.java)
+
+            intent.putExtra("newAlertReceived", true)
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            Log.d("NEWW", "notification send")
 
             val pendingIntent = PendingIntent.getActivity(
+
                 this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+
             )
 
             val channelId = getString(R.string.default_notification_channel_id)
@@ -145,6 +151,8 @@ class LoginActivity : AppCompatActivity() {
         val password = passwordEditText.text.toString()
         val userType = userTypeSpinner.selectedItem.toString()
 
+
+
         val queue = Volley.newRequestQueue(this)
         val url = "https://guardianteenbackend.onrender.com/login"
 
@@ -153,6 +161,8 @@ class LoginActivity : AppCompatActivity() {
             put("password", password)
             put("userType", userType)
         }
+
+
 
         val jsonObjectRequest = object : JsonObjectRequest(
             Request.Method.POST, url, userData,
