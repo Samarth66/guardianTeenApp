@@ -1,5 +1,6 @@
 package com.example.guardianteen
 
+
 import FreeFallDetector
 import android.Manifest
 import android.content.pm.PackageManager
@@ -11,6 +12,10 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 
 
 
@@ -21,6 +26,8 @@ class ChildScreenActivity : AppCompatActivity() {
     private lateinit var freeFallDetector: FreeFallDetector
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationRequestCode = 101
+    private lateinit var sendAlertButton: Button
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +46,11 @@ class ChildScreenActivity : AppCompatActivity() {
         sosButton.setOnClickListener {
             checkLocationPermissionAndGetLocation()
         }
+
+        sendAlertButton = findViewById(R.id.sendAlertButton)
+        val childId = intent.getStringExtra("childId") ?: ""
+
+        sendAlertButton.setOnClickListener { sendAlert(childId) }
     }
 
     private fun checkLocationPermissionAndGetLocation() {
@@ -101,8 +113,40 @@ class ChildScreenActivity : AppCompatActivity() {
         freeFallDetector.stopListening() // Stop listening to save resources
     }
 
+    private fun sendAlert(childId: String) {
+        val url = "https://guardianteenbackend.onrender.com/create"
 
+        // Dummy data for the alert
+        val alertData = JSONObject().apply {
+            put("cid", "6560094b5a32bd73e8f4a19c")
+            put("type", "Dummy Alert Type")
+            put("time", System.currentTimeMillis())
+            put("location", "Dummy Location")
+        }
+
+        val queue = Volley.newRequestQueue(this)
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, alertData,
+            { response ->
+                Toast.makeText(this, "Alert sent successfully", Toast.LENGTH_SHORT).show()
+            },
+            { error ->
+                Toast.makeText(this, "Failed to send alert", Toast.LENGTH_SHORT).show()
+            }
+        )
+
+        queue.add(jsonObjectRequest)
+    }
 }
+
+
+
+
+
+
+
+
+
 
 
 
