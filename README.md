@@ -2,10 +2,6 @@
 
 **guardianTeenApp**
 
-![](Aspose.Words.1d84bfed-8434-416f-85c0-3a093eb950d8.001.png)
-
-[buildbuild unknownunknown](https://travis-ci.org/joemccann/dillinger)![](Aspose.Words.1d84bfed-8434-416f-85c0-3a093eb950d8.002.png)
-
 The Guardian Angel project is an innovative initiative designed to enhance child
 
 safety and parental peace of mind through advanced technology. At its core, the
