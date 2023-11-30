@@ -1,6 +1,6 @@
 package com.example.guardianteen
 
-import FreeFallDetector
+import FreeFallActivity
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -15,10 +15,13 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
+import android.app.AlertDialog
+import android.os.Handler
+import android.os.Looper
 
 class ChildScreenActivity : AppCompatActivity() {
 
-    private lateinit var freeFallDetector: FreeFallDetector
+    private lateinit var freeFallActivity: FreeFallActivity
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationRequestCode = 101
     private lateinit var sendAlertButton: Button
@@ -27,8 +30,8 @@ class ChildScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_child_screen)
 
-        freeFallDetector = FreeFallDetector(this) {
-            onFreeFallDetected()
+        freeFallActivity = FreeFallActivity(this) {
+            showConfirmationDialog()
 
         }
 
@@ -54,8 +57,28 @@ class ChildScreenActivity : AppCompatActivity() {
             })
         }
 
-    }
 
+
+    }
+    private fun showConfirmationDialog() {
+        val dialog = AlertDialog.Builder(this)
+            .setMessage("Are you alright?")
+            .setPositiveButton("Yes") { _, _ ->
+
+            }
+            .setNegativeButton("No") { _, _ ->
+                sendFallAlertImmediately()            }
+            .setCancelable(false)
+            .create()
+
+        dialog.show()
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (dialog.isShowing) {
+                dialog.dismiss()
+                onFreeFallDetected()  // User did not respond, send the alert
+            }
+        }, 15000)
+    }
     private fun onFreeFallDetected() {
         Log.d("FreeFallDetector", "Free Fall Detected!")
         getLastLocation(object : LocationCallback {
@@ -64,8 +87,22 @@ class ChildScreenActivity : AppCompatActivity() {
             }
         })
     }
+    private fun sendFallAlertImmediately() {
+        getLastLocation(object : LocationCallback {
+            override fun onLocationResult(locationString: String) {
+                sendFreeFallAlert(locationString, "6560094b5a32bd73e8f4a19c", "Fall Detected")
+            }
+        })
+    }
 
-    private fun sendFreeFallAlert(location: String, childId: String, type: String) {
+    private fun sendFreeFallAlert(location: String, childId: String, baseType: String) {
+        val heartRate = freeFallActivity.lastHeartRate
+
+        val type = if (heartRate >= 0) {
+            "$baseType (heartrate: $heartRate)"
+        } else {
+            baseType
+        }
         val alertData = JSONObject().apply {
             put("cid", childId)
             put("type", type)
@@ -73,6 +110,7 @@ class ChildScreenActivity : AppCompatActivity() {
             put("location", location)
         }
         sendAlert(alertData)
+
     }
 
     private fun getLastLocation(callback: LocationCallback) {
@@ -120,12 +158,12 @@ class ChildScreenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        freeFallDetector.startListening()
+        freeFallActivity.startListening()
     }
 
     override fun onPause() {
         super.onPause()
-        freeFallDetector.stopListening()
+        freeFallActivity.stopListening()
     }
 
     private fun sendAlert(alertData: JSONObject) {
@@ -144,6 +182,38 @@ class ChildScreenActivity : AppCompatActivity() {
         )
 
         queue.add(jsonObjectRequest)
+    }
+    private fun generateReport() {
+        getLastLocation(object : LocationCallback {
+            override fun onLocationResult(locationString: String) {
+                val fallDetected = freeFallActivity.lastHeartRate
+
+                val reportData = JSONObject().apply {
+                    put("childId", "6560094b5a32bd73e8f4a19c")
+                    put("lastKnownLocation", locationString)
+                    put("fallDetected", fallDetected)
+                    put("reportGeneratedTime", System.currentTimeMillis())
+                }
+
+                sendReport(reportData)
+            }
+        })
+    }
+
+    private fun sendReport(reportData: JSONObject) {
+        // Here you can choose to save the report locally, display it to the user,
+        // or send it to a server.
+        Log.d("ChildScreenActivity", "Report: $reportData")
+
+        // Optionally, convert the report to a string and display in the UI, or send it to a server
+        val reportString = reportData.toString(2)
+        displayReport(reportString)
+    }
+
+    private fun displayReport(report: String) {
+        // Code to update the UI with the report data
+        // This is just a placeholder to show where you would display the report
+        Toast.makeText(this, "Report: $report", Toast.LENGTH_LONG).show()
     }
 
     interface LocationCallback {

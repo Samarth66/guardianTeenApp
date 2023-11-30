@@ -3,15 +3,21 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.util.Log
 import kotlin.math.sqrt
 
-class FreeFallDetector(private val context: Context, private val onFreeFallDetected: () -> Unit) : SensorEventListener {
+class FreeFallActivity(private val context: Context, private val    onFreeFallDetected: () -> Unit) : SensorEventListener {
 
     private val sensorManager: SensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val accelerometer: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+    private val heartRateSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)
+    var lastHeartRate: Int = -1 // Public to be accessed by the activity
 
     fun startListening() {
         accelerometer?.let {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+        heartRateSensor?.let {
             sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
@@ -22,7 +28,10 @@ class FreeFallDetector(private val context: Context, private val onFreeFallDetec
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
-            detectFreeFall(it)
+            when (it.sensor.type) {
+                Sensor.TYPE_ACCELEROMETER -> detectFreeFall(it)
+                Sensor.TYPE_HEART_RATE -> handleHeartRate(it)
+            }
         }
     }
 
@@ -38,6 +47,12 @@ class FreeFallDetector(private val context: Context, private val onFreeFallDetec
         if (magnitude < freeFallThreshold) {
             onFreeFallDetected()
         }
+    }
+
+    private fun handleHeartRate(event: SensorEvent) {
+        lastHeartRate = event.values[0].toInt() // Store the latest heart rate
+        Log.d("FreeFallDetector", "Heart Rate updated: $lastHeartRate")
+
     }
 
     fun stopListening() {

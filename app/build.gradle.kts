@@ -15,7 +15,6 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -82,5 +81,10 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("io.socket:socket.io-client:1.0.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.1.0")
+    testImplementation("org.mockito:mockito-core:3.11.2") // Updated to the latest version
+    testImplementation("org.robolectric:robolectric:4.6.1")
+
+
 }
 
