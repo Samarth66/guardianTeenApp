@@ -20,6 +20,7 @@ import android.text.method.ScrollingMovementMethod
 import android.util.Log
 
 
+
 class ParentScreenActivity : AppCompatActivity() {
 
     private lateinit var childIdEditText: EditText
@@ -29,6 +30,7 @@ class ParentScreenActivity : AppCompatActivity() {
     private lateinit var socket: Socket
     private lateinit var alertsTextView: TextView
     private lateinit var refreshAlertsButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parent_screen)
@@ -58,9 +60,14 @@ class ParentScreenActivity : AppCompatActivity() {
 
         fetchAlerts(parentId)
 
-
+        healthVitalCheckButton.setOnClickListener {
+            sendHealthAlert(parentId)
+        }
 
     }
+
+
+
 
     override fun onNewIntent(intent: Intent) {
         Log.d("NEWW", "From: new message")
@@ -105,6 +112,30 @@ class ParentScreenActivity : AppCompatActivity() {
         }
         alertsTextView.text = stringBuilder.toString()
     }
+    private fun sendHealthAlert(parentId: String) {
+        val url = "https://guardianteenbackend.onrender.com/health-alert"
+
+        // Dummy data for the health alert
+        val healthAlertData = JSONObject().apply {
+            put("pid", parentId)
+            put("type", "Health Alert Type")
+            put("time", System.currentTimeMillis())
+            put("location", "Health Alert Location")
+        }
+
+        val queue = Volley.newRequestQueue(this)
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, healthAlertData,
+            { response ->
+                Toast.makeText(this, "Health alert sent successfully", Toast.LENGTH_SHORT).show()
+            },
+            { error ->
+                Toast.makeText(this, "Failed to send health alert", Toast.LENGTH_SHORT).show()
+            }
+        )
+
+        queue.add(jsonObjectRequest)
+    }
 
 
     private fun handleAddChild(parentId: String) {
@@ -123,7 +154,7 @@ class ParentScreenActivity : AppCompatActivity() {
                 Toast.makeText(this, "Child added successfully", Toast.LENGTH_SHORT).show()
             },
             { error ->
-                Toast.makeText(this, "Failed to add child", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter correct ChildId ", Toast.LENGTH_SHORT).show()
             }
         )
 

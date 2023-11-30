@@ -2,6 +2,7 @@ package com.example.guardianteen
 
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
@@ -12,13 +13,22 @@ import org.json.JSONObject
 class ChildScreenActivity : AppCompatActivity() {
 
     private lateinit var sendAlertButton: Button
+    private lateinit var childIdTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_child_screen)
 
-        sendAlertButton = findViewById(R.id.sendAlertButton)
+        childIdTextView = findViewById(R.id.childIdTextView)
+
+
+        // Set the childId to the TextView
+
         val childId = intent.getStringExtra("childId") ?: ""
+        childIdTextView.text = "Child ID: $childId"
+        sendAlertButton = findViewById(R.id.sendAlertButton)
+
+
 
         sendAlertButton.setOnClickListener { sendAlert(childId) }
     }

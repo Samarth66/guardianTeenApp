@@ -146,12 +146,24 @@ class LoginActivity : AppCompatActivity() {
         userTypeSpinner.adapter = adapter
     }
 
+    private fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
     private fun handleLogin() {
         val email = emailEditText.text.toString()
         val password = passwordEditText.text.toString()
         val userType = userTypeSpinner.selectedItem.toString()
 
+        if (!isValidEmail(email)) {
+            Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show()
+            return
+        }
 
+        // Check if password has at least 6 characters
+        if (password.length < 6) {
+            Toast.makeText(this, "Password must have at least 6 characters", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val queue = Volley.newRequestQueue(this)
         val url = "https://guardianteenbackend.onrender.com/login"
