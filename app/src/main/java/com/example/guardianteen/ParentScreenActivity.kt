@@ -1,5 +1,6 @@
 package com.example.guardianteen
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -60,6 +61,8 @@ class ParentScreenActivity : AppCompatActivity() {
 
     private fun handleSetGeofence() {
         // Implement Set Geofence logic
+        val intent = Intent(this, MapsActivity::class.java)
+        startActivity(intent)
     }
 
     private fun handleHealthVitalCheck() {
