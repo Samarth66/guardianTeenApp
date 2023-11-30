@@ -1,17 +1,26 @@
 package com.example.guardianteen
-
+import android.util.Log
+import kotlinx.coroutines.*
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.net.URL
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 
 class ChildScreenActivity : AppCompatActivity() {
 
@@ -34,11 +43,14 @@ class ChildScreenActivity : AppCompatActivity() {
         //SPEED Comp starts
         speedTextView = findViewById(R.id.speedTextView)
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-        locationListener = LocationListener { location -> // Speed in meters/second
-            val speed = location.speed
-            speedTextView?.text = "Speed: $speed m/s" // Safe call
-            if (speed > 5) {
-                showSpeedAlert()
+        locationListener = LocationListener { location ->
+            CoroutineScope(Dispatchers.Main).launch {
+
+                val speed = location.speed
+                speedTextView?.text = "Speed: $speed m/s"
+                if (speed > 0.5) {
+                    showSpeedAlert(speed)
+                }
             }
         }
         // Request permission
@@ -69,23 +81,36 @@ class ChildScreenActivity : AppCompatActivity() {
             startActivityForResult(intent, HEALTH_MONITOR_REQUEST_CODE)
         }
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    override fun onResume() {
+        super.onResume()
+        updateHealthDataViews()
+    }
 
-        if (requestCode == HEALTH_MONITOR_REQUEST_CODE && resultCode == RESULT_OK) {
-            data?.let {
-                val heartRate = it.getIntExtra("heartRate", 0)
-                val respRate = it.getIntExtra("respRate", 0)
+    private fun updateHealthDataViews() {
+        val heartRate = HealthDataRepository.getInstance().getHeartRate()
+        val respiratoryRate = HealthDataRepository.getInstance().getRespiratoryRate()
 
-                // Update your UI here with the received heart rate and respiratory rate
-            }
-        }
+        heartRateTextView.text = "Heart Rate: $heartRate"
+        respRateTextView.text = "Respiratory Rate: $respiratoryRate"
     }
 
     //SPEED Comp starts
-    private fun showSpeedAlert() {
-        // Example using a Toast message
-        Toast.makeText(this, "Speed limit exceeded!", Toast.LENGTH_SHORT).show()
+    private fun showSpeedAlert(speed: Float) {
+        Toast.makeText(this, "Speed limit exceeded! Current speed: ${speed} m/s", Toast.LENGTH_SHORT).show()
+
+        // Vibrate the phone
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) { // Check if the device has a vibrator
+            val vibrationPattern = longArrayOf(0, 500, 100, 500) // Wait 0ms, Vibrate 500ms, Wait 100ms, Vibrate 500ms
+            // Vibrate with the given pattern, -1 means don't repeat
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // New vibrate method for newer API levels
+                vibrator.vibrate(VibrationEffect.createWaveform(vibrationPattern, -1))
+            } else {
+                // Deprecated method for older API levels
+                vibrator.vibrate(vibrationPattern, -1)
+            }
+        }
     }
     override fun onDestroy() {
         super.onDestroy()

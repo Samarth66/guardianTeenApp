@@ -116,6 +116,8 @@ public class HealthRateCalculator extends AppCompatActivity {
                         sensorManager.unregisterListener(sensorEventListener);
                         int respiratoryRate = callRespiratoryCalculator();
                         respiratoryR=respiratoryRate;
+                        int rate=respiratoryR;
+                        HealthDataRepository.getInstance().setRespiratoryRate(rate);
                         RespText.setText("Respiratory Rate: " + respiratoryRate);
                     }
                 }
@@ -125,7 +127,8 @@ public class HealthRateCalculator extends AppCompatActivity {
             // Unregister the sensor listener if we are already measuring
             isMeasuring = false;
             sensorManager.unregisterListener(sensorEventListener);
-            int respiratoryRate = callRespiratoryCalculator(); // Optional: You can remove this line if you don't want an immediate calculation.
+            int respiratoryRate = callRespiratoryCalculator();
+            HealthDataRepository.getInstance().setRespiratoryRate(respiratoryRate);// Optional: You can remove this line if you don't want an immediate calculation.
             RespText.setText("Measurement Stopped. Resp Rate:" + respiratoryRate); // Optional: Modify this text as needed
         }
     }
@@ -306,21 +309,15 @@ public class HealthRateCalculator extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             if (result != null) {
-                heartRate = Integer.parseInt(result);
+                int heartRate = Integer.parseInt(result);
+                HealthDataRepository.getInstance().setHeartRate(heartRate);
                 HeartText.setText("Heart Rate: " + result);
             } else {
                 HeartText.setText("Calculation failed!");
             }
-            sendResultsBack();
+
         }
-        // Example method to send results back
-        private void sendResultsBack() {
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("heartRate", heartRate);
-            returnIntent.putExtra("respRate", respiratoryR);
-            setResult(RESULT_OK, returnIntent);
-            finish(); // Optionally finish the activity if needed
-        }
+
 
 
 
