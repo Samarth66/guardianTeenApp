@@ -20,7 +20,7 @@ The guardianTeenApp consists of several key components:
 
 To run the guardianTeenApp Android application, follow these steps:
 
-1. Clone the project repository from https://github.com/Samarth66/guardianTeenApp/tree/Prajjwal_Pandey.
+1. Clone the project repository from https://github.com/Samarth66/guardianTeenApp/tree/Deepak_Nayani.
 
 2. Open the project in Android Studio.
 
