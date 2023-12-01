@@ -1,3 +1,5 @@
+#####NOTE : If you are running the app the first time round, on initial sign-in it will say network error, keep trying, it will log-in in under 2-3 minutes (apologies for the inconvenience)
+
 # GuardianTeenApp
 
 ## Overview
