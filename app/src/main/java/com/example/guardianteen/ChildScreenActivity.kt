@@ -2,19 +2,31 @@ package com.example.guardianteen
 
 import FreeFallDetector
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 
 class ChildScreenActivity : AppCompatActivity() {
 
@@ -22,6 +34,8 @@ class ChildScreenActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationRequestCode = 101
     private lateinit var sendAlertButton: Button
+    private val REQUEST_VIDEO_CAPTURE = 123
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +64,71 @@ class ChildScreenActivity : AppCompatActivity() {
                     }
                     Toast.makeText(this@ChildScreenActivity, locationString, Toast.LENGTH_LONG).show()
                     sendAlert(alertData)
+                    showEmergencyRecordingDialog()
                 }
             })
         }
 
     }
+
+    private fun showEmergencyRecordingDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Emergency Recording")
+            .setMessage("Do you want to start emergency recording?")
+            .setPositiveButton("Yes") { _, _ ->
+                startRecording()
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    private fun startRecording() {
+        val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+
+        // Set the video duration limit in seconds
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30)
+
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivityForResult(intent, REQUEST_VIDEO_CAPTURE)
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
+            val videoUri: Uri? = data?.data
+            videoUri?.let { uri ->
+                try {
+                    val videoFile = createVideoFile()
+                    saveVideoToFile(uri, videoFile)
+                    Toast.makeText(this, "Video saved to ${videoFile.absolutePath}", Toast.LENGTH_LONG).show()
+                } catch (e: IOException) {
+                    Toast.makeText(this, "Failed to save video", Toast.LENGTH_SHORT).show()
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    private fun createVideoFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_MOVIES)!!
+        return File.createTempFile(
+            "VIDEO_${timeStamp}_", /* prefix */
+            ".mp4", /* suffix */
+            storageDir /* directory */
+        )
+    }
+
+    private fun saveVideoToFile(videoUri: Uri, destFile: File) {
+        contentResolver.openInputStream(videoUri).use { inputStream ->
+            FileOutputStream(destFile).use { outputStream ->
+                inputStream?.copyTo(outputStream)
+            }
+        }
+    }
+
 
     private fun onFreeFallDetected() {
         Log.d("FreeFallDetector", "Free Fall Detected!")
@@ -126,6 +200,8 @@ class ChildScreenActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         freeFallDetector.stopListening()
+
+
     }
 
     private fun sendAlert(alertData: JSONObject) {
