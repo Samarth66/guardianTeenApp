@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "743824052351",
+    "project_id": "guardianteen-3f1b5",
+    "storage_bucket": "guardianteen-3f1b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743824052351:android:d4e6f64b9a084f8dbcaf4a",
+        "android_client_info": {
+          "package_name": "com.example.guardianteen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWIPmLxPDnOMpWbxLBdxcJkEsbjpuauXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

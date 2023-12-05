@@ -65,7 +65,7 @@ class SignupActivity : AppCompatActivity() {
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.POST, url, userData,
-            { response ->
+            { _ ->
                 Toast.makeText(this, "Signed up successfully!", Toast.LENGTH_SHORT).show()
             },
             { error ->
