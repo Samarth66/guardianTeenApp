@@ -1,6 +1,13 @@
+<<<<<<< HEAD
+
+# GuardianAngelTeenApp
+
+=======
 #####NOTE : If you are running the app the first time round, on initial sign-in it will say network error, keep trying, it will log-in in under 2-3 minutes (apologies for the inconvenience)
 
 # GuardianTeenApp
+
+> > > > > > > origin/Deepak_Nayani
 
 ## Overview
 
@@ -10,29 +17,43 @@ guardianAngelTeen App is an Android application aimed at providing parents with 
 
 The guardianTeenApp consists of several key components:
 
-1. **ChildScreenActivity**: Implemented the features for free fall detection and SOS emergency button with optional video recording
+<<<<<<< HEAD
 
-2. **SOS Alert**: Sends an alert to the respective parent as type "SOS", and allows the child to record a 30 second video in case of emergencies
+1. **ChildScreenActivity**: Responsible for monitoring the child's speed and health vitals. It utilizes GPS technology to track speed and mobile sensors for health monitoring.
 
-3. **Fall Detection**: Uses the device accelerometer to detect free falls using a threshold value (computed through trial and error) and sends a notification alert to the respective parent.
+2. **HealthRateCalculator**: This class calculates health data, including heart rate and respiratory rate. It uses data from the device's camera to calculate heart rate and accelerometer data for respiratory rate.
 
-4. **AlertFunction and VibrateFunction**: These components are responsible for triggering alerts and vibrations in predefined scenarios, ensuring prompt communication during emergencies.
+3. # **HealthDataRepository**: Manages the storage and retrieval of health data, including heart rate and respiratory rate.
+4. **ChildScreenActivity**: Implemented the features for free fall detection and SOS emergency button with optional video recording
+
+5. **SOS Alert**: Sends an alert to the respective parent as type "SOS", and allows the child to record a 30 second video in case of emergencies
+
+6. **Fall Detection**: Uses the device accelerometer to detect free falls using a threshold value (computed through trial and error) and sends a notification alert to the respective parent.
+
+   > > > > > > > origin/Deepak_Nayani
+
+7. **AlertFunction and VibrateFunction**: These components are responsible for triggering alerts and vibrations in predefined scenarios, ensuring prompt communication during emergencies.
 
 ## Execution Instructions
 
 To run the guardianTeenApp Android application, follow these steps:
 
+<<<<<<< HEAD
+
+1. # Clone the project repository from https://github.com/Samarth66/guardianTeenApp/tree/Prajjwal_Pandey.
 1. Clone the project repository from https://github.com/Samarth66/guardianTeenApp/tree/Deepak_Nayani.
 
-2. Open the project in Android Studio.
+   > > > > > > > origin/Deepak_Nayani
 
-3. Build and run the application on an Android emulator or a physical Android device.
+1. Open the project in Android Studio.
 
-4. Grant the necessary permissions for location, camera, and sensors when prompted.
+1. Build and run the application on an Android emulator or a physical Android device.
 
-5. Navigate through the application to access its features, including speed monitoring, health vitals, and emergency functions.
+1. Grant the necessary permissions for location, camera, and sensors when prompted.
 
-6. Refer to the in-app user guide for detailed instructions on using each feature.
+1. Navigate through the application to access its features, including speed monitoring, health vitals, and emergency functions.
+
+1. Refer to the in-app user guide for detailed instructions on using each feature.
 
 ## Additional Notes
 

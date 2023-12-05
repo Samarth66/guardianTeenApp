@@ -4,13 +4,47 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <TextView
+        android:id="@+id/speedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="188dp"
+        android:layout_marginTop="208dp"
+        android:text="Speed: --" />
 
+    <Button
+        android:id="@+id/btnOpenHealthMonitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Open Health Monitor"
+        android:layout_below="@id/speedTextView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/heartRateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Heart Rate:"
+        android:layout_below="@id/btnOpenHealthMonitor"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/respRateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Respiratory Rate:"
+        android:layout_below="@id/heartRateTextView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/sendAlertButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SOS"
+        android:layout_below="@id/respRateTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"/>
 </RelativeLayout>
