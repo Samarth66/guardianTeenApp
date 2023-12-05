@@ -116,6 +116,7 @@ class ParentScreenActivity : AppCompatActivity() {
             val alert = alerts.getJSONObject(i)
             val childId = alert.getString("cid")
             val type = alert.getString("type")
+         //   val description = alert.getString("description")
             val location = alert.getString("location")
             val time = alert.getString("time")
 
@@ -163,9 +164,10 @@ class ParentScreenActivity : AppCompatActivity() {
         // Dummy data for the health alert
         val healthAlertData = JSONObject().apply {
             put("pid", parentId)
-            put("type", "Health Alert Type")
+            put("type", "Health Check")
+            put("description", "Parent requesting health check")
             put("time", System.currentTimeMillis())
-            put("location", "Health Alert Location")
+            put("location", "N/A")
         }
 
         val queue = Volley.newRequestQueue(this)
