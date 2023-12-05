@@ -7,7 +7,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
-import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
@@ -18,6 +17,7 @@ class ParentScreenActivity : AppCompatActivity() {
     private lateinit var addChildButton: Button
     private lateinit var setGeofenceButton: Button
     private lateinit var healthVitalCheckButton: Button
+    private val parentId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +61,9 @@ class ParentScreenActivity : AppCompatActivity() {
 
     private fun handleSetGeofence() {
         // Implement Set Geofence logic
+        val parentId = intent.getStringExtra("parentId") ?: ""
         val intent = Intent(this, MapsActivity::class.java)
+        intent.putExtra("parentId", parentId);
         startActivity(intent)
     }
 
