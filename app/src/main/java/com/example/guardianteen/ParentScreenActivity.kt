@@ -1,7 +1,11 @@
 package com.example.guardianteen
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -30,7 +34,7 @@ class ParentScreenActivity : AppCompatActivity() {
     private val parentId: String? = null
 
     private lateinit var socket: Socket
-    private lateinit var alertsTextView: TextView
+    private lateinit var alertsLayout: LinearLayout
     private lateinit var refreshAlertsButton: Button
 
 
@@ -52,8 +56,8 @@ class ParentScreenActivity : AppCompatActivity() {
         healthVitalCheckButton.setOnClickListener { handleHealthVitalCheck() }
 
 
-        alertsTextView = findViewById(R.id.alertsTextView)
-        alertsTextView.movementMethod = ScrollingMovementMethod()
+        alertsLayout = findViewById(R.id.alertsLayout)
+
 
         refreshAlertsButton = findViewById(R.id.refreshAlertsButton)
         refreshAlertsButton.setOnClickListener {
@@ -105,16 +109,54 @@ class ParentScreenActivity : AppCompatActivity() {
     }
 
     private fun displayAlerts(alerts: JSONArray) {
-        val stringBuilder = StringBuilder()
+        val alertsLayout: LinearLayout = findViewById(R.id.alertsLayout)
+        alertsLayout.removeAllViews() // Clear previous views
+
         for (i in 0 until alerts.length()) {
             val alert = alerts.getJSONObject(i)
-            stringBuilder.append("Child: ${alert.getString("cid")}\n")
-            stringBuilder.append("Type: ${alert.getString("type")}\n")
-            stringBuilder.append("Location: ${alert.getString("location")}\n")
-            stringBuilder.append("Time: ${alert.getString("time")}\n\n")
+            val childId = alert.getString("cid")
+            val type = alert.getString("type")
+            val location = alert.getString("location")
+            val time = alert.getString("time")
+
+            val textView = TextView(this).apply {
+                text = "Child: $childId\nType: $type\nLocation: $location\nTime: $time\n\n"
+                setOnClickListener {
+                    val locationParts = location.split(",")
+                    if (locationParts.size == 2) {
+                        val latitude = locationParts[0].toDoubleOrNull()
+                        val longitude = locationParts[1].toDoubleOrNull()
+                        if (latitude != null && longitude != null) {
+                            openMapWithLocation(latitude, longitude)
+                        }
+                    }
+                }
+                textSize = 16f
+                background = ContextCompat.getDrawable(context, android.R.drawable.edit_text)
+
+                // Set padding (left, top, right, bottom)
+                val paddingInPixels = 16 // example padding value
+                setPadding(paddingInPixels, paddingInPixels, paddingInPixels, paddingInPixels)
+            }
+
+            alertsLayout.addView(textView)
         }
-        alertsTextView.text = stringBuilder.toString()
     }
+
+    private fun openMapWithLocation(latitude: Double, longitude: Double) {
+        val gmmIntentUri = Uri.parse("geo:$latitude,$longitude")
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+        mapIntent.setPackage("com.google.android.apps.maps")
+        if (mapIntent.resolveActivity(packageManager) != null) {
+            startActivity(mapIntent)
+        } else {
+            Toast.makeText(this, "No Map application found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+
     private fun sendHealthAlert(parentId: String) {
         val url = "https://guardianteenbackend.onrender.com/health-alert"
 
