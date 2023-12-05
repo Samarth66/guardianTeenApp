@@ -1,5 +1,6 @@
 package com.example.guardianteen
 
+
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
@@ -18,8 +19,9 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
-import java.net.HttpURLConnection
-import java.net.URL
+
+import android.widget.TextView
+
 
 class ChildScreenActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -29,14 +31,29 @@ class ChildScreenActivity : AppCompatActivity() {
     private val LOCATION_UPDATE_INTERVAL: Long = 15000 // 15 seconds
     private var childId: String = ""
 
+
+
+
+
+    private lateinit var sendAlertButton: Button
+    private lateinit var childIdTextView: TextView
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_child_screen)
 
+        childIdTextView = findViewById(R.id.childIdTextView)
+        sendAlertButton = findViewById(R.id.sendAlertButton)
+
+        // Assign the value from the intent to the class-level childId variable
         childId = intent.getStringExtra("childId") ?: ""
+        childIdTextView.text = "Child ID: $childId"
+
+        sendAlertButton.setOnClickListener { sendAlert(childId) }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-
     }
 
     override fun onResume() {
@@ -117,5 +134,36 @@ class ChildScreenActivity : AppCompatActivity() {
         )
         queue.add(jsonObjectRequest)
     }
+
+    private fun sendAlert(childId: String) {
+        val url = "https://guardianteenbackend.onrender.com/create"
+
+        // Dummy data for the alert
+        val alertData = JSONObject().apply {
+            put("cid", childId)
+            put("type", "Dummy Alert Type")
+            put("time", System.currentTimeMillis())
+            put("location", "Dummy Location")
+        }
+
+        val queue = Volley.newRequestQueue(this)
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, alertData,
+            { response ->
+                Toast.makeText(this, "Alert sent successfully", Toast.LENGTH_SHORT).show()
+            },
+            { error ->
+                Toast.makeText(this, "Failed to send alert", Toast.LENGTH_SHORT).show()
+            }
+        )
+
+        queue.add(jsonObjectRequest)
+    }
 }
+
+
+
+
+
+
 
