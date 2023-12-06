@@ -4,50 +4,89 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:background="@color/background_color">
+
+    <TextView
+        android:id="@+id/parentLayoutTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PARENT LAYOUT"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/purple_500"
+        android:layout_marginBottom="24dp" />
 
     <EditText
         android:id="@+id/childIdEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Child ID" />
+        android:hint="Enter Child ID"
+        android:textColor="@color/black"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="24dp" />
 
     <Button
         android:id="@+id/addChildButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Child" />
+        android:text="Add Child"
+        android:background="@drawable/button_background_primary"
+        android:textColor="@color/button_text"
+        android:layout_marginBottom="24dp" />
 
-    <Button
-        android:id="@+id/setGeofenceButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Set Geofence" />
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="24dp">
 
-    <Button
-        android:id="@+id/healthVitalCheckButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Health Vital Check" />
+        <Button
+            android:id="@+id/setGeofenceButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Set Geofence"
+            android:background="@drawable/button_background_teal"
+            android:textColor="@color/white" />
+
+        <View
+            android:layout_width="24dp"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/healthVitalCheckButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Health Vital Check"
+            android:background="@drawable/button_background_teal"
+            android:textColor="@color/white" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/refreshAlertsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Refresh Alerts" />
+        android:text="Refresh Alerts"
+        android:background="@drawable/button_background_accent"
+        android:textColor="@color/button_text"
+        android:layout_marginBottom="24dp" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-    <LinearLayout
-        android:id="@+id/alertsLayout"
-        android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/alertsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/white">
+            <!-- Dynamic content goes here -->
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

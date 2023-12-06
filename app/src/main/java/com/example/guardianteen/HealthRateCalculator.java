@@ -124,7 +124,13 @@ public class HealthRateCalculator extends AppCompatActivity {
                 JSONObject alertData = new JSONObject();
                 try {
                     alertData.put("cid", childId);
-                    alertData.put("type", "SOS");
+                    alertData.put("type", "Health Checkup");
+                    int heartRatee = HealthDataRepository.getInstance().getHeartRate();
+                    int respiratoryRatee = HealthDataRepository.getInstance().getRespiratoryRate();
+
+                    String description = String.format("Your child's HeartRate is %d bpm and Respiratory Rate is %d breaths/min", heartRatee, respiratoryRatee);
+                    alertData.put("description", description);
+
                     alertData.put("time", System.currentTimeMillis());
                     alertData.put("location", "your_location_here"); // Replace with actual location data
                 } catch (JSONException e) {
@@ -132,7 +138,7 @@ public class HealthRateCalculator extends AppCompatActivity {
                 }
 
                 // Show a toast with the location information (for testing)
-                Toast.makeText(HealthRateCalculator.this, "your_location_here", Toast.LENGTH_LONG).show();
+
                 System.out.println("AlertData: " + childId);
                 // Call the sendAlert method with alertData
                 sendAlert(alertData);

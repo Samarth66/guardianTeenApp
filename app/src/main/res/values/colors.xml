@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="background_color">#EFEFEF</color> <!-- Light grey for the app background -->
+    <color name="text_primary">#212121</color> <!-- Dark grey for primary text -->
+    <color name="button_text">#FFFFFF</color> <!-- White for text on buttons -->
+    <color name="button_primary">#3F51B5</color> <!-- Blue for primary buttons -->
+    <color name="button_accent">#FF4081</color> <!-- Pink for accent buttons -->
 </resources>

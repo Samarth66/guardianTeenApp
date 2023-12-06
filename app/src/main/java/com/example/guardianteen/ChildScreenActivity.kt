@@ -451,7 +451,7 @@ class ChildScreenActivity : AppCompatActivity() {
         val alertData = JSONObject().apply {
             put("cid", childId)
             put("type", type)
-            put("description", "Emergency Assistance Needed")
+            put("description", "Speed Limit Crossed")
             put("time", System.currentTimeMillis())
             put("location", "N/A")
         }

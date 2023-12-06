@@ -116,12 +116,12 @@ class ParentScreenActivity : AppCompatActivity() {
             val alert = alerts.getJSONObject(i)
             val childId = alert.getString("cid")
             val type = alert.getString("type")
-         //   val description = alert.getString("description")
+            val description = alert.getString("description")
             val location = alert.getString("location")
             val time = alert.getString("time")
 
             val textView = TextView(this).apply {
-                text = "Child: $childId\nType: $type\nLocation: $location\nTime: $time\n\n"
+                text = "Child: $childId\nType: $type\nDescription: $description\nLocation: $location\nTime: $time\n\n"
                 setOnClickListener {
                     val locationParts = location.split(",")
                     if (locationParts.size == 2) {
