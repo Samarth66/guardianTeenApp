@@ -44,7 +44,7 @@ import android.widget.TextView
 import FreeFallDetector
 import android.net.Uri
 import android.os.Environment
-
+import android.os.Looper
 
 
 class ChildScreenActivity : AppCompatActivity() {
@@ -92,7 +92,7 @@ class ChildScreenActivity : AppCompatActivity() {
         //Deepak start
         childIdTextView = findViewById(R.id.childIdTextView)
         freeFallDetector = FreeFallDetector(this) {
-            onFreeFallDetected()
+            showConfirmationDialog()
 
 
 
@@ -343,6 +343,26 @@ class ChildScreenActivity : AppCompatActivity() {
                 inputStream?.copyTo(outputStream)
             }
         }
+    }
+
+    private fun showConfirmationDialog() {
+        val dialog = AlertDialog.Builder(this)
+            .setMessage("Are you alright?")
+            .setPositiveButton("Yes") { _, _ ->
+
+            }
+            .setNegativeButton("No") { _, _ ->
+                onFreeFallDetected()            }
+            .setCancelable(false)
+            .create()
+
+        dialog.show()
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (dialog.isShowing) {
+                dialog.dismiss()
+                onFreeFallDetected()  // User did not respond, send the alert
+            }
+        }, 15000)
     }
 
 
