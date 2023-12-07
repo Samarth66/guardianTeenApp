@@ -299,15 +299,6 @@ class ChildScreenActivity : AppCompatActivity() {
     }
 
 
-        // Dummy data for the alert
-//        val alertData = JSONObject().apply {
-//            put("cid", childId)
-//            put("type", "Dummy Alert Type")
-//            put("time", System.currentTimeMillis())
-//            put("location", "Dummy Location")
-//
-//        }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -483,8 +474,5 @@ class ChildScreenActivity : AppCompatActivity() {
             locationManager!!.removeUpdates(locationListener!!)
         }
     }
-    // Handle the permission result
-
-    //SPEED Comp END
 }
 
