@@ -4,13 +4,50 @@ const router = express.Router();
 const Alert = require("./alertSchema"); // Import your Alert model
 const User = require("./userSchema"); // Import your User model
 const Relationship = require("./relationshipSchema");
+const LocationModel = require("./locationSchema");
+const { Client } = require("@googlemaps/google-maps-services-js");
+const client = new Client({});
 
 // Create an alert
+
 router.post("/create", async (req, res) => {
-  const { cid, type, time, location } = req.body;
+  const { cid, type, description, time } = req.body;
+  const locationData = await LocationModel.findOne({ cid: cid });
+  console.log("Received cid", cid);
+  console.log("fetched location data", locationData);
+  const [longitude, latitude] = locationData.coordinates;
+  const locationString = `${latitude}, ${longitude}`;
+  console.log(locationString);
 
   try {
-    const newAlert = new Alert({ cid, type, time, location });
+    const findNearestPlaces = async (type) => {
+      const response = await client.placesNearby({
+        params: {
+          location: { latitude, longitude },
+          radius: 10000, // search within 1km radius
+          type: type,
+          key: "AIzaSyAYna2V-xNgIEr0_cIjlUFMHbKmASUK5NA",
+        },
+      });
+      console.log("Google Maps API Response:", response);
+
+      return response.data.results[0];
+    };
+
+    const nearestPoliceStation = await findNearestPlaces("police");
+    const nearestHospital = await findNearestPlaces("hospital");
+
+    console.log(nearestPoliceStation);
+    console.log(nearestHospital);
+    const updatedDescription = `${description}. Nearest Police Station: ${nearestPoliceStation.name} Nearest Hospital: ${nearestHospital.name}`;
+
+    const newAlert = new Alert({
+      cid,
+      type,
+      description: updatedDescription,
+      time,
+      location: locationString,
+    });
     await newAlert.save();
 
     // Step 1: Identify the Parent's ID
@@ -33,7 +70,7 @@ router.post("/create", async (req, res) => {
     const message = {
       notification: {
         title: "New Alert",
-        body: `New alert of ${type} for your child.`,
+        body: `New alert: ${type} detected.`,
       },
       token: parentDeviceToken,
     };
@@ -95,9 +132,13 @@ router.post("/health-alert", async (req, res) => {
     }
     const cid = relationship.cid;
     console.log(cid);
+    const locationData = await LocationModel.findOne({ cid: cid });
+    console.log(locationData);
+    const [longitude, latitude] = locationData.coordinates;
+    const locationString = `${latitude}, ${longitude}`;
 
-    const { type, time, location } = req.body;
-    const healthAlertData = { cid, type, time, location };
+    const { type, description, time, location } = req.body;
+    const healthAlertData = { cid, type, description, time, location };
 
     const newHealthAlert = new Alert(healthAlertData);
     await newHealthAlert.save();

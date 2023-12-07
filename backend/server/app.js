@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const loginRoutes = require("./loginRoutes");
 const relationshipRoutes = require("./relationshipRoutes");
 const alertRoutes = require("./alertRoutes");
+const locationRoutes = require("./locationRoutes");
 const serviceAccount =
   "./guardianteen-3f1b5-firebase-adminsdk-fglys-254d167587.json";
 const admin = require("firebase-admin");
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use("/", loginRoutes);
 app.use("/", relationshipRoutes);
 app.use("/", alertRoutes);
+app.use("/", locationRoutes);
 
 const server = http.createServer(app); // Create an HTTP server
 const io = socketIo(server); // Initialize socket.io on the server

@@ -10,6 +10,11 @@ const alertSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+    required: false,
+  },
+
   time: {
     type: Date,
     default: Date.now,
@@ -17,7 +22,7 @@ const alertSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    required: true,
+    required: false,
   },
 });
 
