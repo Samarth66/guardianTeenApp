@@ -17,7 +17,7 @@ To run the GuardianAngelTeenApp Android application, follow these steps:
 5. Ensure that you check the following functionalities:
    - Logging in and signing up to enable communication.
    - Adding a childId in parent screen
-   - Sending alerts notification from the child screen to parent device by clicking on sendAlert button in child screen.
+   - Sending alerts SOS, Health Vital Check, Fall Detection, Set Geofence, Overspeeding.
    - Sending alert from parent device to child device by clicking health vital check button.
 
 ## Backend Deployment

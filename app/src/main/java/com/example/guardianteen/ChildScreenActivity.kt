@@ -120,7 +120,7 @@ class ChildScreenActivity : AppCompatActivity() {
 
                 val speed = location.speed
                 speedTextView?.text = "Speed: $speed m/s"
-                if (speed > 0.5) {
+                if (speed > 50) {
                     showSpeedAlert(speed)
                 }
             }

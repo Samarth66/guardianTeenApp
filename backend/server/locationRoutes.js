@@ -44,8 +44,20 @@ async function checkForGeofenceBreaches(cid) {
       console.log("not inside");
       if (latestLocation.lastGeofenceState == true) {
         console.log("true detected");
+
+        const alertData = {
+          cid: cid,
+          type: "Geofenced-Breached",
+          description: "Your child has left the designated area.",
+          time: new Date().getTime(),
+          location: `${latestLocation.coordinates[1]}, ${latestLocation.coordinates[0]}`,
+        };
+
+        // Send the alert to the /create endpoint
+        sendAlertToCreateEndpoint(alertData);
         // Child has just left the geofence, send notification
-        await sendGeofenceNotification(cid);
+        // await sendGeofenceNotification(cid);
+
         // Update the last geofence state to false (outside)
         await LocationModel.updateOne(
           { cid: cid },
@@ -65,32 +77,52 @@ async function checkForGeofenceBreaches(cid) {
   }
 }
 
-async function sendGeofenceNotification(cid) {
-  console.log("Sending notification");
-  // Fetch parent's device token
-  const relationship = await Relationship.findOne({ cid: cid });
-  if (!relationship) {
-    console.log("Relationship not found for cid:", cid);
-    return;
-  }
+// async function sendGeofenceNotification(cid) {
+//   console.log("Sending notification");
+//   // Fetch parent's device token
+//   const relationship = await Relationship.findOne({ cid: cid });
+//   if (!relationship) {
+//     console.log("Relationship not found for cid:", cid);
+//     return;
+//   }
 
-  console.log("Sending notification", relationship.pid);
+//   console.log("Sending notification", relationship.pid);
 
-  const parentUser = await User.findById(relationship.pid);
-  if (parentUser && parentUser.deviceToken) {
-    const message = {
-      notification: {
-        title: "Geofence Alert",
-        body: "Your child has left the designated area.",
-      },
-      token: parentUser.deviceToken,
-    };
+//   const parentUser = await User.findById(relationship.pid);
+//   if (parentUser && parentUser.deviceToken) {
+//     const message = {
+//       notification: {
+//         title: "Geofence Alert",
+//         body: "Your child has left the designated area.",
+//       },
+//       token: parentUser.deviceToken,
+//     };
 
-    admin
-      .messaging()
-      .send(message)
-      .then((response) => console.log("Notification sent to parent:", response))
-      .catch((error) => console.error("Error sending notification:", error));
+//     admin
+//       .messaging()
+//       .send(message)
+//       .then((response) => console.log("Notification sent to parent:", response))
+//       .catch((error) => console.error("Error sending notification:", error));
+//   }
+
+async function sendAlertToCreateEndpoint(alertData) {
+  const url = "https://guardianteenbackend.onrender.com/create";
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(alertData),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const responseData = await response.json();
+    console.log("Alert sent successfully:", responseData);
+  } catch (error) {
+    console.error("Failed to send alert:", error.message);
   }
 }
 
