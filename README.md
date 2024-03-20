@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# guardianTeenApp
+
 ## Overview
 The GuardianAngelTeenApp is an Android application designed to empower parents with a versatile tool to ensure the safety and well-being of their teenage children. This app introduces a range of essential features to help parents stay informed and take proactive measures when needed. These functionalities encompass Speed Monitoring, Geofencing, Fall Detection, and Health Vitals Monitoring. Additionally, the app includes an SOS button for immediate emergency communication and live location sharing to keep parents updated on their child's whereabouts.
 
@@ -55,27 +54,12 @@ Make these endpoint updates in the following locations within the Android app:
 - `https://guardianteenbackend.onrender.com/signup` (Present in `signupActivity`)
 
 Feel free to reach out if you have any questions or need further assistance!
-=======
-<<<<<<< HEAD
 
-# GuardianAngelTeenApp
-
-=======
 #####NOTE : If you are running the app the first time round, on initial sign-in it will say network error, keep trying, it will log-in in under 2-3 minutes (apologies for the inconvenience)
-
-# GuardianTeenApp
-
-> > > > > > > origin/Deepak_Nayani
-
-## Overview
-
-guardianAngelTeen App is an Android application aimed at providing parents with an effective and versatile tool for ensuring the safety and well-being of their teenage children. This application introduces several key features to help parents stay informed and take action when necessary. These features include Speed Monitoring, Geofencing, Fall Detection, and Health Vitals Monitoring. guardianTeenApp also includes an SOS button for immediate communication during emergencies and live location sharing to keep parents informed about their child's whereabouts.
 
 ## Project Components
 
 The guardianTeenApp consists of several key components:
-
-<<<<<<< HEAD
 
 1. **ChildScreenActivity**: Responsible for monitoring the child's speed and health vitals. It utilizes GPS technology to track speed and mobile sensors for health monitoring.
 
@@ -88,30 +72,7 @@ The guardianTeenApp consists of several key components:
 
 6. **Fall Detection**: Uses the device accelerometer to detect free falls using a threshold value (computed through trial and error) and sends a notification alert to the respective parent.
 
-   > > > > > > > origin/Deepak_Nayani
-
 7. **AlertFunction and VibrateFunction**: These components are responsible for triggering alerts and vibrations in predefined scenarios, ensuring prompt communication during emergencies.
-
-## Execution Instructions
-
-To run the guardianTeenApp Android application, follow these steps:
-
-<<<<<<< HEAD
-
-1. # Clone the project repository from https://github.com/Samarth66/guardianTeenApp/tree/Prajjwal_Pandey.
-1. Clone the project repository from https://github.com/Samarth66/guardianTeenApp/tree/Deepak_Nayani.
-
-   > > > > > > > origin/Deepak_Nayani
-
-1. Open the project in Android Studio.
-
-1. Build and run the application on an Android emulator or a physical Android device.
-
-1. Grant the necessary permissions for location, camera, and sensors when prompted.
-
-1. Navigate through the application to access its features, including speed monitoring, health vitals, and emergency functions.
-
-1. Refer to the in-app user guide for detailed instructions on using each feature.
 
 ## Additional Notes
 
@@ -121,5 +82,3 @@ To run the guardianTeenApp Android application, follow these steps:
 
 - This README provides a high-level overview of the project and basic execution instructions. Detailed documentation, including code structure, architecture, and usage guidelines, can be found within the project source code and associated documentation files.
 
-Thank you for using guardianAngelTeen App, and we hope this application enhances the safety and well-being of your teenage children.
->>>>>>> origin/Deepak_Nayani
