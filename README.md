@@ -65,7 +65,8 @@ The guardianTeenApp consists of several key components:
 
 2. **HealthRateCalculator**: This class calculates health data, including heart rate and respiratory rate. It uses data from the device's camera to calculate heart rate and accelerometer data for respiratory rate.
 
-3. # **HealthDataRepository**: Manages the storage and retrieval of health data, including heart rate and respiratory rate.
+3. **HealthDataRepository**: Manages the storage and retrieval of health data, including heart rate and respiratory rate.
+
 4. **ChildScreenActivity**: Implemented the features for free fall detection and SOS emergency button with optional video recording
 
 5. **SOS Alert**: Sends an alert to the respective parent as type "SOS", and allows the child to record a 30 second video in case of emergencies
